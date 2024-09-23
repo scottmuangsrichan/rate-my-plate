@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { ImageUpload } from "~/components/ImageUpload";
+import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,12 +14,12 @@ export default function Index() {
   return (
     <div className="flex flex-col h-screen items-center justify-center p-4">
       <div className="flex flex-row border">
-        <button>
+        <Button>
           <Link to={"/signUp"}>Sign Up</Link>
-        </button>
-        <button>
+        </Button>
+        <Button>
           <Link to={"/login"}>Login</Link>
-        </button>
+        </Button>
       </div>
       <ImageUpload />
       <h1 className="text-center text-2xl md:text-4xl">Rate My Plate</h1>
