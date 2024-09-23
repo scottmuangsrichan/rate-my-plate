@@ -1,5 +1,26 @@
-import React, { useState } from "react";
-import { Form, useActionData } from "@remix-run/react";
+import React, { useState, useEffect } from "react";
+import { Form, useActionData, useNavigate } from "@remix-run/react";
+import { ActionFunctionArgs } from "@remix-run/node";
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const email = formData.get("email");
+  const password = formData.get("password");
+
+  // Basic validation
+  if (typeof email !== "string" || typeof password !== "string") {
+    return { error: "Invalid form submission" };
+  }
+
+  // Here you would typically:
+  // 1. Validate the email format
+  // 2. Check if the email is already in use
+  // 3. Hash the password
+  // 4. Save the user to your database
+
+  // For now, we'll just simulate a successful signup
+  return { success: true };
+}
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -7,6 +28,13 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const actionData = useActionData();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if ((actionData as { success?: boolean })?.success) {
+      navigate("/");
+    }
+  }, [actionData, navigate]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     if (password !== confirmPassword) {
@@ -36,7 +64,7 @@ export default function SignUp() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -52,7 +80,7 @@ export default function SignUp() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -68,13 +96,22 @@ export default function SignUp() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
           </div>
+          {actionData?.error && (
+            <div className="text-red-600 text-center">{actionData.error}</div>
+          )}
+          <button
+            type="submit"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Create Account
+          </button>
         </Form>
       </div>
     </div>
